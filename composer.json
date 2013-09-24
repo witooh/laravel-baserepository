@@ -1,5 +1,5 @@
 {
-    "name": "witooh/baserepository",
+    "name": "witooh/base_repository",
     "description": "",
     "authors": [
         {
@@ -13,7 +13,9 @@
     },
     "autoload": {
         "psr-0": {
-            "Witooh\\BaseRepository": "src/"
+            "Witooh\\BaseRepository": "src/",
+            "Witooh\\Entities": "src/",
+            "Witooh\\Aggregates": "src/"
         }
     },
     "minimum-stability": "dev"
