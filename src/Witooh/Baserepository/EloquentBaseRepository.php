@@ -2,25 +2,19 @@
 
 namespace Witooh\BaseRepository;
 
+use Illuminate\Database\Query\Builder;
+
 abstract class EloquentBaseRepository implements IBaseRepository
 {
+    /**
+     * @var \Illuminate\Database\Query\Builder
+     */
+    protected $db;
 
     /**
-     * @var \Eloquent
+     * @return \Witooh\Entities\AbstractEntitiy
      */
-    protected $model;
-
-    public function __construct()
-    {
-//        $this->model = $this->getModelQuery();
-        $this->model = $this->instance();
-    }
-
-    /**
-     * @param array $data
-     * @return
-     */
-    abstract public function instance($data = array());
+    abstract public function instance();
 
     /**
      * @param array $column
@@ -28,18 +22,22 @@ abstract class EloquentBaseRepository implements IBaseRepository
      */
     public function all($column = array('*'))
     {
-        return $this->model->get($column);
+        return $this->db->get($column);
     }
 
     /**
      * @param array $attr
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Witooh\Entities\AbstractEntitiy
      */
     public function store($attr)
     {
-        $model = $this->model->getModel();
+        $model = $this->instance();
+        $model->fill($attr);
 
-        return $model->create($attr);
+        $id = $this->db->insertGetId($attr);
+        $model->setPrimaryKeyValue($id);
+
+        return $model;
     }
 
     /**
@@ -49,9 +47,9 @@ abstract class EloquentBaseRepository implements IBaseRepository
     public function storeAll($data)
     {
         if (($data instanceof \Illuminate\Support\Collection) && $data->count() > 0) {
-            return $this->model->insert($data->toArray());
+            return $this->db->insert($data->toArray());
         } elseif (is_array($data)) {
-            return $this->model->insert($data);
+            return $this->db->insert($data);
         }
     }
 
@@ -62,7 +60,15 @@ abstract class EloquentBaseRepository implements IBaseRepository
      */
     public function update($id, $attr)
     {
-        $model = $this->model->find($id);
+        $data = get_object_vars($this->db->find($id));
+
+        if($data != null){
+            $model = $this->instance()->fill($data);
+            $this->db->where($model->getPrimaryKey(), $model->getPrimaryKeyValue())->update($model->v);
+        }
+
+        $model = $this->instance()->fill($data);
+
         if ($model != null) {
             return $model->fill($attr)->save();
         }

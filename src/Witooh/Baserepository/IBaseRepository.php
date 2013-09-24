@@ -4,10 +4,6 @@ namespace Witooh\BaseRepository;
 
 interface IBaseRepository
 {
-
-
-    public function __construct();
-
     /**
      * @param array $column
      * @return \Illuminate\Database\Eloquent\Collection
@@ -15,46 +11,39 @@ interface IBaseRepository
     public function all($column = array('*'));
 
     /**
-     * @param array $attr
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param array|\Illuminate\Support\Collection $data
      */
-    public function store($attr);
+    public function insertAll($data);
 
     /**
-     * @param array|\Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection $data
-     * @return bool
+     * @param \Witooh\Entities\AbstractEntitiy|null|array $entity
      */
-    public function storeAll($data);
+    public function flush($entity=null);
 
     /**
-     * @param int $id
-     * @param array $attr
-     * @return bool
+     * @param \Witooh\Entities\AbstractEntitiy $entity
      */
-    public function update($id, $attr);
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param array $attr
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function updateByModel($model, $attr = array());
+    public function persist($entity);
 
     /**
      * @param int $id
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Witooh\Entities\AbstractEntitiy
      */
     public function find($id);
 
     /**
-     * @param array|int $ids
+     * @param \Witooh\Entities\AbstractEntitiy $entity
      */
-    public function destroy($ids);
+    public function remove($entity);
 
     /**
-     * @param array $data
-     * @return
+     * @param \Witooh\Entities\AbstractEntitiy $entity
      */
-    public function instance($data = array());
+    public function detach($entity);
+
+    /**
+     * @param \Witooh\Entities\AbstractEntitiy $entity
+     */
+    public function merge($entity);
 
 }
