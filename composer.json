@@ -13,9 +13,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Witooh\\BaseRepository": "src/",
-            "Witooh\\Entities": "src/",
-            "Witooh\\Aggregates": "src/"
+            "Witooh\\BaseRepository": "src/"
         }
     },
     "minimum-stability": "dev"
