@@ -4,7 +4,7 @@ namespace Witooh\BaseRepository;
 
 use Illuminate\Support\Collection;
 use Witooh\Doctrine\DoctrineManager;
-use Witooh\Entities\AbstractEntitiy;
+use Witooh\Entity\AbstractEntitiy;
 
 abstract class DoctrineBaseRepository implements IBaseRepository
 {
