@@ -2,19 +2,12 @@
 
 namespace Witooh\BaseRepository;
 
-use Illuminate\Database\Query\Builder;
-
 abstract class EloquentBaseRepository implements IBaseRepository
 {
     /**
-     * @var \Illuminate\Database\Query\Builder
+     * @var \Eloquent
      */
-    protected $db;
-
-    /**
-     * @return \Witooh\Entities\AbstractEntitiy
-     */
-    abstract public function instance();
+    protected $model;
 
     /**
      * @param array $column
@@ -22,75 +15,45 @@ abstract class EloquentBaseRepository implements IBaseRepository
      */
     public function all($column = array('*'))
     {
-        return $this->db->get($column);
+        return $this->model->all($column);
     }
 
     /**
-     * @param array $attr
-     * @return \Witooh\Entities\AbstractEntitiy
+     * @param \Eloquent $entity
+     * @return \Eloquent
      */
-    public function store($attr)
+    public function store($entity)
     {
-        $model = $this->instance();
-        $model->fill($attr);
-
-        $id = $this->db->insertGetId($attr);
-        $model->setPrimaryKeyValue($id);
-
-        return $model;
+        return $this->model->create($entity->toArray());
     }
 
     /**
-     * @param array|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection $data
-     * @return bool
+     * @param array|\Illuminate\Support\Collection $data
+     * @return void
      */
     public function storeAll($data)
     {
         if (($data instanceof \Illuminate\Support\Collection) && $data->count() > 0) {
-            return $this->db->insert($data->toArray());
+            $this->model->insert($data->toArray());
         } elseif (is_array($data)) {
-            return $this->db->insert($data);
+            $this->model->insert($data);
         }
     }
+
+    /**
+     * @param \Eloquent $entity
+     * @param string $primaryKey
+     */
+    public function update($entity, $primaryKey='id')
+    {
+        $getKeyMethod = 'get'.ucfirst(camel_case($primaryKey));
+        $this->model->find($entity->$getKeyMethod())->update($entity->toArray());
+    }
+
 
     /**
      * @param int $id
-     * @param array $attr
-     * @return bool
-     */
-    public function update($id, $attr)
-    {
-        $data = get_object_vars($this->db->find($id));
-
-        if($data != null){
-            $model = $this->instance()->fill($data);
-            $this->db->where($model->getPrimaryKey(), $model->getPrimaryKeyValue())->update($model->v);
-        }
-
-        $model = $this->instance()->fill($data);
-
-        if ($model != null) {
-            return $model->fill($attr)->save();
-        }
-
-        return false;
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param array $attr
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function updateByModel($model, $attr = array())
-    {
-        $model->fill($attr)->save();
-
-        return $model;
-    }
-
-    /**
-     * @param int $id
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Eloquent
      */
     public function find($id)
     {
@@ -98,10 +61,35 @@ abstract class EloquentBaseRepository implements IBaseRepository
     }
 
     /**
-     * @param array|int $ids
+     * @param \Eloquent $entity
      */
-    public function destroy($ids)
+    public function destroy($entity)
     {
-        $this->model->destroy($ids);
+        $entity->delete();
+    }
+
+    /**
+     * @param $criterai
+     * @param int $offset
+     * @param int $limit
+     * @param string $order
+     * @param string $dir
+     */
+    public function criteriaPager(&$criterai ,&$offset, &$limit, &$order, &$dir='ASC')
+    {
+        if(empty($offset)){
+            $offset = 0;
+        }
+
+        if(empty($limit)){
+            $limit = 15;
+        }
+
+        if(!empty($order)){
+            $criterai->orderBy($order, $dir);
+        }
+
+        $criterai->offset($offset);
+        $criterai->limit($limit);
     }
 }

@@ -6,44 +6,37 @@ interface IBaseRepository
 {
     /**
      * @param array $column
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function all($column = array('*'));
 
     /**
+     * @param \Eloquent $entity
+     * @return \Eloquent
+     */
+    public function store($entity);
+
+    /**
      * @param array|\Illuminate\Support\Collection $data
+     * @return void
      */
-    public function insertAll($data);
+    public function storeAll($data);
 
     /**
-     * @param \Witooh\Entity\AbstractEntitiy|null|array $entity
+     * @param \Eloquent $entity
+     * @param string $primaryKey
      */
-    public function flush($entity=null);
-
-    /**
-     * @param \Witooh\Entity\AbstractEntitiy $entity
-     */
-    public function persist($entity);
+    public function update($entity, $primaryKey='id');
 
     /**
      * @param int $id
-     * @return \Witooh\Entity\AbstractEntitiy
+     * @return \Eloquent
      */
     public function find($id);
 
     /**
-     * @param \Witooh\Entity\AbstractEntitiy $entity
+     * @param \Eloquent $entity
      */
-    public function remove($entity);
-
-    /**
-     * @param \Witooh\Entity\AbstractEntitiy $entity
-     */
-    public function detach($entity);
-
-    /**
-     * @param \Witooh\Entity\AbstractEntitiy $entity
-     */
-    public function merge($entity);
+    public function destroy($entity);
 
 }

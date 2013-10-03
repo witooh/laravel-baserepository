@@ -4,7 +4,7 @@ namespace Witooh\BaseRepository;
 
 use Illuminate\Support\Collection;
 use Witooh\Doctrine\DoctrineManager;
-use Witooh\Entity\AbstractEntitiy;
+use Witooh\Entity\AbstractEntity;
 
 abstract class DoctrineBaseRepository implements IBaseRepository
 {
@@ -30,7 +30,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
     public function insertAll($data)
     {
         foreach($data as $item){
-            if($item instanceof AbstractEntitiy){
+            if($item instanceof AbstractEntity){
                 $this->dm->em()->persist($item);
             }
         }
@@ -39,7 +39,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
     }
 
     /**
-     * @param AbstractEntitiy|null|array $entity
+     * @param AbstractEntity|null|array $entity
      */
     public function flush($entity=null)
     {
@@ -47,7 +47,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
     }
 
     /**
-     * @param AbstractEntitiy $entity
+     * @param AbstractEntity $entity
      */
     public function persist($entity)
     {
@@ -56,7 +56,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
 
     /**
      * @param int $id
-     * @return AbstractEntitiy
+     * @return AbstractEntity
      */
     public function find($id)
     {
@@ -64,7 +64,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
     }
 
     /**
-     * @param AbstractEntitiy $entity
+     * @param AbstractEntity $entity
      */
     public function remove($entity)
     {
@@ -72,7 +72,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
     }
 
     /**
-     * @param AbstractEntitiy $entity
+     * @param AbstractEntity $entity
      */
     public function detach($entity)
     {
@@ -80,7 +80,7 @@ abstract class DoctrineBaseRepository implements IBaseRepository
     }
 
     /**
-     * @param AbstractEntitiy $entity
+     * @param AbstractEntity $entity
      */
     public function merge($entity)
     {
